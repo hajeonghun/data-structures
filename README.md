@@ -189,3 +189,65 @@ function divideBy2(decNumber) {
 }
 ```
 시간복잡도는 O(log N) 이다.
+
+## Queue
+> FIFO(First In First Out) 컬렉션
+- 새 원소는 뒤로 들어가서 앞으로 빠져나가는 구조이다.
+- 따라서 마지막에 추가된 원소는 큐의 뒤에서 가장 오래 대기해야 한다. 
+- 큐와 스택은 원소의 추가/삭제 원리만 다를 뿐 나머지는 동일하다. <br/><br/>
+  ![img.png](assets/queue.png)
+
+### 구현단계
+- 구현해야할 메서드
+  - enqueue(items): 큐의 뒤쪽에 원소(들)을 추가한다.
+  - dequeue(): 큐의 첫 번째(맨 앞) 원소를 반환하고 삭제한다.
+  - front(): 큐의 첫 번째 원소를 반환하되, 삭제하지 않는다. (스택의 peek 메소드와 비슷하다.)
+  - isEmpty(): 큐가 비어있으면 true, 비어있지 않으면 false 반환
+  - size(): 큐에 있는 원소의 개수를 반환한다. 배열의 length 프로퍼티와 동일
+
+- 구현
+```javascript
+class Queue {
+    constructor() {
+        this.items = [];
+    }
+    
+    enqueue(...items) {
+        this.items.push(...items);
+    }
+    
+    dequeue() {
+        return this.items.shift();
+    }
+    
+    front() {
+        return this.items.at(0);
+    }
+    
+    isEmpty() {
+        return !this.items.length;
+    }
+    
+    size() {
+        return this.items.length;
+    }
+}
+```
+- 테스트
+```javascript
+const queue = new Queue();
+
+console.log(queue.isEmpty()); // true
+
+queue.enqueue("ha"); // queue: ["ha"]
+queue.enqueue("jeong"); // queue: ["ha", "jeong"]
+queue.enqueue("hun"); // queue: ["ha", "jeong", "hun"]
+
+console.log(queue); // ["ha", "jeong", "hun"]
+console.log(queue.size()); // 3
+console.log(queue.isEmpty()); // false
+
+queue.dequeue(); // "ha" 반환
+queue.dequeue(); // "jeong" 반환
+console.log(queue); // ["hun"]
+```
