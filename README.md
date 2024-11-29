@@ -113,7 +113,7 @@ console.log(numbers); // 결과: 1, 2, 3, 6
   - clear(): 스택의 모든 원소를 삭제한다.
   - size(): 스택에 있는 원소의 개수를 반환한다. 배열의 length 프로퍼티와 동일  
 
-- 구현
+- **구현**
 ```javascript
 class Stack {
     constructor() {
@@ -146,7 +146,7 @@ class Stack {
 }
 ```  
   
-- 테스트
+- **테스트**
 ```javascript
 const stack = new Stack();
 
@@ -205,7 +205,7 @@ function divideBy2(decNumber) {
   - isEmpty(): 큐가 비어있으면 true, 비어있지 않으면 false 반환
   - size(): 큐에 있는 원소의 개수를 반환한다. 배열의 length 프로퍼티와 동일
 
-- 구현
+- **구현**
 ```javascript
 class Queue {
     constructor() {
@@ -233,7 +233,7 @@ class Queue {
     }
 }
 ```
-- 테스트
+- **테스트**
 ```javascript
 const queue = new Queue();
 
@@ -251,3 +251,161 @@ queue.dequeue(); // "ha" 반환
 queue.dequeue(); // "jeong" 반환
 console.log(queue); // ["hun"]
 ```
+
+## Linked List
+> 데이터를 노드(Node) 형태로 저장하는 선형 데이터 구조  
+- 각 노드는 데이터를 포함하며 다음 노드를 가리키는 포인터(또는 참조)를 가지고 있다.
+- 배열은 인덱스로 원소에 바로 접근할 수 있지만, 연결 리스트는 원소를 찾기위해 Head부터 순차적으로 접근해야 한다. 
+<br/><br/>
+![img.png](assets/linked-list.png)
+
+### 구현단계
+- 구현해야 할 헬퍼 클래스(Node)
+  - element: 원소
+  - next: 다음 원소에 대한 포인터
+- 구현해야 할 변수
+  - length: 연결리스트의 총 원소 개수
+  - head: 연결이 시작되는 지점
+- 구현해야할 메서드
+  - append(element): 연결 리스트의 맨 끝에 원소를 추가한다.
+  - insert(position, element): 해당 위치에 원소를 삽입한다.
+  - removeAt(position): 해당 위치의 원소를 삭제한다.
+  - remove(element): 해당 원소를 삭제한다.
+  - indexOf(element): 해당 원소의 인덱스를 반환한다. 미존재 시 -1 반환
+  - isEmpty(): 원소가 하나도 없으면 true, 있으면 false 반환
+  - size(): 원소 개수를 반환. 배열의 length 프로퍼티와 동일
+  - toString(): 원소가 Node에 담겨있기 때문에 원소의 값만을 출력하기 위해 toString 메소드 재정의  
+  
+
+- **append(element) 구현**
+```javascript
+class Node {
+    constructor(element) {
+        this.element = element;
+        this.next = null;
+    }
+}
+class LinkedList {
+    #length = 0;
+    #head = null;
+
+    append(element) {
+        const node = new Node(element);
+        
+        if (this.#head === null) { // (1) 원소가 비었을 때
+            this.#head = node;
+        } else {
+            let current = this.#head;
+
+            // (2) next가 null일 때까지 반복 
+            while (current.next) {
+                current = current.next;
+            }
+
+            // (3) next를 방금 추가한 Node로 등록
+            current.next = node;
+        }
+
+        // (4) 원소의 길이 1 추가
+        this.#length += 1;
+    }
+}
+```
+- (1) - 원소가 비었을 경우에는, 추가하는 원소를 연결 리스트의 head로 등록한다.
+- (2) - 연결 리스트에 원소가 이미 있는 경우, 가장 뒤에 추가해야 하기 때문에 Node의 next 포인트가 null인 꼬리(tail)지점까지 접근을 반복한다.
+- (3) - current가 가장 뒤의 Node로 접근했기 때문에 next 포인트를 추가할려고 한 원소를 가리키게 한다.
+- (4) - 연결리스트의 원소가 추가되었기 때문에 length 프로퍼티를 1 더한다.
+
+
+- **insert(position, element) 구현**
+```javascript
+class LinkedList {
+  #length = 0;
+  #head = null;
+    
+    // ...(생략)
+
+    insert(position, element) {
+        // (1) 삽입 위치가 범위를 벗어남
+        if (position < 0 || position > this.#length) return false;
+        
+        const node = new Node(element)
+        let previous = null; 
+        let current = this.#head;
+        
+        // (2) 첫 위치에 삽입 시
+        if (position === 0) {
+            node.next = current;
+            this.#head = node;
+            this.#length += 1;
+            
+            return true;
+        }
+        
+        for (let i = 0; i < position; i++) {
+          previous = current; // (3) 삽입 위치 이전 노드
+          current = current.next // (4) 삽입 위치의 기존 노드
+        }
+        
+        // (5)
+        node.next = current;
+        previous.next = node;
+        
+        this.#length += 1;
+        
+        return true;
+    }
+}
+```
+- (1) - 삽입 위치가 범위를 벗어날 경우 false 반환
+- (2) - 첫 위치에 삽입 시, 우선 신규 Node의 next가 head를 바라보게 한 뒤에 head를 신규 Node로 옮긴다. (`head` -> `New Node` -> `Existing First Node`)  
+- (3) - poisition이 2라고 가정했을 때, 1번 Node 를 뜻한다.
+- (4) - poisition이 2라고 가정했을 때, 기존 연결 리스트의 2번 Node 를 뜻한다.
+- (5) - 신규 Node의 next가 기존 2번 Node를 바라보게 하고, 1번 Node의 next가 신규 Node를 바라보게 한다. (`head` -> `index {1} Node` -> `index {2} New Node` -> `Existing index {2} Node`)
+
+
+- **removeAt(position) 구현**
+```javascript
+class LinkedList {
+  #length = 0;
+  #head = null;
+    
+    // ...(생략)
+    removeAt(position) {
+        // (1) 삭제 위치가 범위를 벗어남
+        if (position < 0 || position >= this.#length) return null;
+        
+        const node = new Node(element)
+        let previous = null; 
+        let current = this.#head;
+        
+        // (2) 첫 위치 원소 삭제 시
+        if (position === 0) {
+            this.#head = current.next;
+            this.#length -= 1;
+            
+            return current.element;
+        }
+        
+        for (let i = 0; i < position; i++) {
+          previous = current; // (3) 삭제할 노드의 이전 노드
+          current = current.next // (4) 삭제할 노드
+        }
+        
+        // (5)
+        previous.next = current.next;
+        
+        this.#length -= 1;
+        
+        return current.element;
+    }
+}
+```
+- (1) - 삭제 위치가 범위를 벗어날 경우 null 반환
+- (2) - 첫 위치의 Node 삭제 시, head가 두번째 Node를 바라보게 한다. (첫번째 Node를 참조하는 곳이 없어 GC 수행)
+- (3) - poisition이 2라고 가정했을 때, 1번 Node 를 뜻한다.
+- (4) - poisition이 2라고 가정했을 때, 기존 연결 리스트의 2번 Node 를 뜻한다.
+- (5) - 1번 Node의 next가 2번 Node의 next인 3번 Node를 바라보게 하면 2번 Node는 GC 수행되며 제거  
+
+![img.png](assets/linked-list(removeAt).png)
+
