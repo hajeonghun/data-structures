@@ -517,7 +517,21 @@ class LinkedList {
 
 ## Doubly Linked List
 > 이중 연결 리스트는 이전(prev) Node, 다음(next) Node 2개의 연결정보를 갖고있다.
-- 연결 리스트는 next Node로만 접근이 가능했지만, 이중 연결 리스트는 prev Node에도 접근 할 수 있다. 
+- 연결 리스트는 next Node로만 접근이 가능했지만, 이중 연결 리스트는 prev Node에도 접근 할 수 있다.
+- 첫 번째 원소를 가리키는 Head 프로퍼티 외에도 마지막 원소를 가리키는 Tail 프로퍼티가 추가됐다.
 - 구조는 다음 그림과 같다.
   <br/><br/>
 ![img.png](assets/doubly-linked-list.png)
+
+### 구현단계
+- 구현해야 할 헬퍼 클래스(Node)
+  - element: 원소
+  - prev: 이전 원소에 대한 포인터
+  - next: 다음 원소에 대한 포인터
+- 구현해야 할 변수
+  - length: 연결리스트의 총 원소 개수
+  - head: 연결이 시작되는 지점
+  - tail: 연결이 끝나는 지점
+- 구현해야할 주요 메서드 ()
+  - insert(position, element): 해당 위치에 원소를 삽입한다.
+  - removeAt(position): 해당 위치의 원소를 삭제한다.
