@@ -410,7 +410,7 @@ class LinkedList {
 
 ![img.png](assets/linked-list(removeAt).png)
 
-**indexOf(element) 구현** - 해당 원소의 인덱스를 반환한다. 미존재 시 -1 반환
+- **indexOf(element) 구현** - 해당 원소의 인덱스를 반환한다. 미존재 시 -1 반환
 ```javascript
 class LinkedList {
   #length = 0;
@@ -443,7 +443,8 @@ class LinkedList {
 - (3) - 인자로 받은 원소와 일치한 원소가 있으면 즉시 index를 반환한다.
 - (4) - 반복문이 모두 수행됐음에도 발견된 원소가 없으므로 -1을 반환한다.
 
-**toString() 구현** - 원소가 Node에 담겨있기 때문에 원소의 값만을 출력하기 위해 toString 메소드 재정의
+
+- **toString() 구현** - 원소가 Node에 담겨있기 때문에 원소의 값만을 출력하기 위해 toString 메소드 재정의
 ```javascript
 class LinkedList {
   #length = 0;
@@ -468,7 +469,8 @@ class LinkedList {
 - (1) - current는 현재 위치로 전부 순회해도 없는 경우 current는 null을 가지며 반복문이 종료된다.
 - (2) - node의 element 값을 string 변수에 이어 붙인다.
 
-**remove(element) 구현** - 해당 원소를 삭제한다.
+
+- **remove(element) 구현** - 해당 원소를 삭제한다.
 ```javascript
 class LinkedList {
   #length = 0;
@@ -485,7 +487,8 @@ class LinkedList {
 - (1) - 먼저 구현한 indexOf 메소드를 이용해서 해당 원소의 index를 찾는다.
 - (2) - 먼저 구현한 removeAt 메소드에 (1)에서 찾은 index를 이용하여 원소를 삭제하고 반환한다.
 
-**isEmpty() 구현** - 원소가 하나도 없으면 true, 있으면 false 반환
+
+- **isEmpty() 구현** - 원소가 하나도 없으면 true, 있으면 false 반환
 ```javascript
 class LinkedList {
   #length = 0;
@@ -501,7 +504,7 @@ class LinkedList {
 - (1) - length가 0이면 true, 0이 아니면 false를 반환한다.
 
 
-**size() 구현** - 원소 개수를 반환. 배열의 length 프로퍼티와 동일
+- **size() 구현** - 원소 개수를 반환. 배열의 length 프로퍼티와 동일
 ```javascript
 class LinkedList {
   #length = 0;
@@ -521,7 +524,7 @@ class LinkedList {
 - 첫 번째 원소를 가리키는 Head 프로퍼티 외에도 마지막 원소를 가리키는 Tail 프로퍼티가 추가됐다.
 - 구조는 다음 그림과 같다.
   <br/><br/>
-![img.png](assets/doubly-linked-list.png)
+  ![img.png](assets/doubly-linked-list.png)
 
 ### 구현단계
 - 구현해야 할 헬퍼 클래스(Node)
@@ -535,3 +538,150 @@ class LinkedList {
 - 구현해야할 주요 메서드 ()
   - insert(position, element): 해당 위치에 원소를 삽입한다.
   - removeAt(position): 해당 위치의 원소를 삭제한다.
+  
+
+- **insert(position, element) 구현** - 해당 위치에 원소를 삽입한다.
+```javascript
+class Node {
+  constructor(element) {
+    this.element = element;
+    this.prev = null;
+    this.next = null;
+  }
+}
+class DobulyLinkedList {
+  #length = 0;
+  #head = null;
+  #tail = null;
+
+  insert(position, element) {
+    if (position < 0 || position > length) {
+      return false;
+    }
+
+    const node = new Node(element);
+    let current = this.#head;
+    let previous = null;
+    let index = 0;
+
+    // (1)
+    if (position === 0) {
+      if (!this.#head) {
+        this.#head = node;
+        this.#tail = node;
+      } else {
+        current.prev = node;
+        node.next = current;
+        this.#head = node;
+      }
+
+      this.#length += 1;
+      return true;
+    }
+
+    // (2)
+    if (position === this.#length) {
+      this.#tail.next = node;
+      node.prev = this.#tail;
+      this.#tail = node;
+
+      this.#length += 1;
+      return true;
+    }
+
+    // (3)
+    while (index++ < position) {
+      previous = current;
+      current = current.next;
+    }
+
+    // (4)
+    previous.next = node;
+    node.prev = previous;
+    node.next = current;
+    current.prev = node;
+
+    this.#length += 1;
+
+    return true;
+  }
+}
+```
+- (1) - 첫 번째(index: 0)위치에 삽입 하는 경우,
+  - head가 null인 경우 리스트가 빈 상태이므로 head, tail을 모두 추가할 원소를 바라보게 한다.
+  - 리스트가 비어있지 않은 경우에는, current(현재 head)의 이전(prev)원소를 추가할 원소로 바라보게하고, 추가할 원소의 다음(next) 원소를 current를 바라보게 하여 연결을 완료한다.
+- (2) - 마지막위치에 삽입 하는 경우, tail.next를 신규원소로 설정하고, 신규 원소의 prev를 기존 tail 원소로 바라보게하여 연결을 완료한다. 그리고 마지막으로 tail 프로퍼티를 신규 원소로 다시 재설정해준다.
+- (3) - 임의의 위치에 삽입 하는 경우로, 기존 연결 리스트처럼 해당 위치까지 previous, current를 이동시킨다.
+  - 여기서 추가로 length 프로퍼티의 값과 삽입할 위치를 비교하여 tail에 가까운 경우에는 뒤에서 순회하면 성능적인 이점을 가질 수 있다.
+- (4) - 해당 위치로 이동이 완료된 뒤, previous, node, current 간의 `prev`, `next`를 확실히 연결하여 연결이 끊기지 않도록 한다.
+  
+
+- **removeAt(position) 구현** - 해당 위치의 원소를 삭제한다.
+```javascript
+class DobulyLinkedList {
+  #length = 0;
+  #head = null;
+  #tail = null;
+
+  removeAt(position) {
+    if (position < 0 || position > length) {
+      return null;
+    }
+
+    let current = this.#head;
+    let previous = null;
+    let index = 0;
+
+    // (1)
+    if (position === 0) {
+      if (!this.#head) {
+        return null;
+      }
+
+      this.#head = current.next;
+
+      if (this.#length === 1) {
+        this.#tail = null;
+      } else {
+        this.#head.prev = null;
+      }
+
+      this.#length -= 1;
+
+      return current.element;
+    }
+
+    // (2)
+    if (position === this.#length - 1) {
+      current = this.#tail;
+      this.#tail = current.prev;
+      this.#tail.next = null;
+
+      this.#length -= 1;
+
+      return current.element;
+    }
+
+    // (3)
+    while (index++ < position) {
+      previous = current;
+      current = current.next;
+    }
+
+    // (4)
+    previous.next = current.next;
+    current.next.prev = previous;
+
+    this.#length -= 1;
+
+    return current.element;
+  }
+}
+```
+- (1) - 첫 번째(index: 0)위치를 삭제 하는 경우, head를 두번 째 원소를 바라보게한다.
+  - 만약, 리스트의 개수가 1개였다면 tail도 null 처리를 해준다.
+  - 리스트가 2개 이상이였다면 tail은 유지하고 head의 prev 값을 null로 설정하여 첫번째 원소와의 연결을 끊는다.
+- (2) - 마지막위치를 삭제 하는 경우, tail을 마지막에서 2번째 원소로 바라보게 하고 tail.next를 null로 설정하여 마지막 원소와의 연결을 끊는다.
+- (3) - 임의의 위치를 삭제 하는 경우로, 해당 위치까지 previous, current를 이동시킨다.
+  - insert(추가) 메소드와 마찬가지로 length 프로퍼티의 값과 삭제할 위치를 비교하여 tail에 가까운 경우에는 뒤에서 순회하면 성능적인 이점을 가질 수 있다.
+- (4) - 해당 위치로 이동이 완료된 뒤, 삭제할 원소위치의 이전,이후 원소 간의 `next`, `prev`를 확실히 연결하여 삭제할 원소와의 연결을 끊는다.
