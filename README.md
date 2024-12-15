@@ -5,10 +5,11 @@
 - [Array](#array)
 - [Stack](#stack)
 - [Queue](#queue)
-- [DeQueue](#dequeue)
 - [Linked List](#linked-list)
+- [Doubly Linked List](#doubly-linked-list)
 - [Set](#set)
-- [Dictionary/Hash](#dictionary/hash)
+- [Dictionary](#dictionary)
+- [Hash](#hash)
 - [Graph](#graph)
 
 ## Array
@@ -979,3 +980,29 @@ console.log(setA.subset(setC)); // false
 ```
 
 ---
+
+## Dictionary
+> 딕셔너리(Dictionary)는 [key, value] 형태의 데이터를 가지는 자료구조이다.
+- 집합이 [key, key], 딕셔너리가 [key, value] 형태의 원소를 모아놓은 점에서 두 자료구조는 비슷하다.
+- 딕셔너리는 맵(Map)이라고도 한다.
+
+### 구현단계
+- 구현해야할 메서드
+  - set(key, value): 원소를 추가한다.
+  - remove(key): 해당 key의 원소를 삭제한다.
+  - has(key): 키에 해당하는 원소가 딕셔너리에 포함되어 있는지 여부를 true/false로 반환한다.
+  - get(key): 키에 해당하는 원소의 value를 반환한다.
+  - clear(): 모든 원소를 삭제한다.
+  - size(): 원소의 개수를 반환한다. 배열의 length 프로퍼티와 동일
+  - keys(): 딕셔너리의 모든 키를 배열로 반환한다.
+  - values(): 딕셔너리의 모든 값을 배열 형태로 반환한다.
+
+- **구현**
+```javascript
+class Dictionary {
+  constructor() {
+    this.items = {};
+  }
+
+}
+```
