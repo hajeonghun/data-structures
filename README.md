@@ -538,7 +538,7 @@ class LinkedList {
 - 구현해야할 주요 메서드 ()
   - insert(position, element): 해당 위치에 원소를 삽입한다.
   - removeAt(position): 해당 위치의 원소를 삭제한다.
-  
+
 
 - **insert(position, element) 구현** - 해당 위치에 원소를 삽입한다.
 ```javascript
@@ -614,7 +614,7 @@ class DobulyLinkedList {
 - (3) - 임의의 위치에 삽입 하는 경우로, 기존 연결 리스트처럼 해당 위치까지 previous, current를 이동시킨다.
   - 여기서 추가로 length 프로퍼티의 값과 삽입할 위치를 비교하여 tail에 가까운 경우에는 뒤에서 순회하면 성능적인 이점을 가질 수 있다.
 - (4) - 해당 위치로 이동이 완료된 뒤, previous, node, current 간의 `prev`, `next`를 확실히 연결하여 연결이 끊기지 않도록 한다.
-  
+
 
 - **removeAt(position) 구현** - 해당 위치의 원소를 삭제한다.
 ```javascript
@@ -685,3 +685,297 @@ class DobulyLinkedList {
 - (3) - 임의의 위치를 삭제 하는 경우로, 해당 위치까지 previous, current를 이동시킨다.
   - insert(추가) 메소드와 마찬가지로 length 프로퍼티의 값과 삭제할 위치를 비교하여 tail에 가까운 경우에는 뒤에서 순회하면 성능적인 이점을 가질 수 있다.
 - (4) - 해당 위치로 이동이 완료된 뒤, 삭제할 원소위치의 이전,이후 원소 간의 `next`, `prev`를 확실히 연결하여 삭제할 원소와의 연결을 끊는다.
+
+## Set
+> 집합(Set)은 데이터를 중복 없이 저장하고 순서에 의존하지 않는 비선형 데이터 구조
+- 집합 자료 구조는 수학에서의 유한집합(finite set)의 개념을 컴퓨터 과학에 적용한 것이다.
+- 정렬 개념이 없는, 원소가 중복되지 않는 배열이라고 볼 수 있다.
+- 집합은 합집합, 교집합, 차집합 같은 수학적 연산이 가능하다.
+
+### 구현단계
+- 구현해야할 메서드
+  - add(value): 원소를 추가한다.
+  - remove(value): 원소를 삭제한다.
+  - has(value): 어떤 원소가 집합에 포함되어 있는지 여부를 true/false로 반환한다.
+  - clear(): 모든 원소를 삭제한다.
+  - size(): 원소의 개수를 반환한다. 배열의 length 프로퍼티와 동일
+  - values(): 집합의 모든 원소를 배열 형태로 반환한다.
+
+- **구현**
+```javascript
+class Set {
+  constructor() {
+    this.items = {};
+  }
+
+  has(value) {
+    return this.items.hasOwnProperty(value);
+  }
+
+  add(value) {
+    if (this.has(value)) {
+      return false;
+    }
+
+    this.items[value] = value;
+    return true;
+  }
+
+  remove(value) {
+    if (this.has(value)) {
+      delete this.items[value];
+      return true;
+    }
+
+    return false;
+  }
+
+  clear() {
+    this.items = {};
+  }
+
+  size() {
+    return Object.keys(this.items).length;
+  }
+
+  values() {
+    return Object.keys(this.items);
+  }
+}
+```
+
+- **테스트**
+```javascript
+const set = new Set();
+
+set.add(1);
+console.log(set.values()); // ["1"]
+console.log(set.has(1)); // true
+console.log(set.size()); // 1
+
+set.add(2);
+console.log(set.values()); // ["1", "2"]
+console.log(set.has(2)); // true
+console.log(set.size()); // 2
+
+set.remove(1);
+console.log(set.values()); // ["2"]
+
+set.remove(2);
+console.log(set.values()); // []
+```
+
+### 집합 연산
+> 집합에서 사용 가능한 연산은 네 가지가 있다.
+- 합집합 (Union): 두 집합 중 어느 한쪽이라도 포함된 원소로 구성된 집합
+- 교집합 (Intersection): 두 집합 모두 포함되어 있는 원소로 구성된 집합
+- 차집합 (Difference): 첫 번째 집합에는 있지만 두 번째 집합에는 없는 원소로 구성된 집합
+- 부분집합 (Subset): 어떤 집합이 다른 집합의 일부인 집합
+
+
+### 1. **합집합 (Union)**
+- **기호**: ( A ∪ B )
+- **의미**: ( A )와 ( B )의 모든 원소를 포함하는 집합. 중복은 허용되지 않음.
+- **예**: ( A = {1, 2, 3}, B = {3, 4, 5} )일 때, ( A ∪ B = {1, 2, 3, 4, 5} )
+- **구현**
+```javascript
+class Set {
+  // ...(생략)
+
+  union(otherSet) {
+    const unionSet = new Set(); // (1)
+    const unionValues = [...this.values(), ...otherSet.values()]; // (2)
+
+    for (const value of unionValues) {
+      unionSet.add(value); // (3)
+    }
+
+    return unionSet;
+  }
+}
+```
+- (1) - 합집합으로 만들 새로운 set을 생성한다.
+- (2) - 현재 집합(A)의 모든 원소들과 다른 집합(B)의 모든 원소의 value를 한개의 배열로 합친다.
+- (3) - 원소를 순회하면서 unionSet(합집합)에 추가해준다.
+
+
+- **테스트**
+```javascript
+const setA = new Set();
+
+setA.add(1);
+setA.add(2);
+setA.add(3);
+
+const setB = new Set();
+
+setB.add(1);
+setB.add(2);
+setB.add(3);
+setB.add(4);
+setB.add(5);
+setB.add(6);
+
+const unionSet = setA.union(setB);
+console.log(unionSet.values()); // ["1", "2", "3", "4", "5", "6"]
+```
+
+---
+
+### 2. **교집합 (Intersection)**
+- **기호**: ( A ∩ B )
+- **의미**: ( A )와 ( B )에 **공통으로 포함된 원소들**의 집합.
+- **예**: ( A = {1, 2, 3}, B = {3, 4, 5} )일 때, ( A ∩ B = {3} ).
+- **구현**
+```javascript
+class Set {
+  // ...(생략)
+
+  intersection(otherSet) {
+    const intersectionSet = new Set(); // (1)
+    const otherSetValues = otherSet.values();
+
+    for (let i = 0; i < otherSetValues.length; i++) {
+      if (this.has(otherSetValues[i])) { // (2)
+        intersectionSet.add(otherSetValues[i]); // (3)
+      }
+    }
+
+    return intersectionSet;
+  }
+}
+```
+- (1) - 교집합으로 만들 새로운 set을 생성한다.
+- (2) - 현재 집합(A)에도 다른 집합(B)의 원소가 있는지 확인한다.
+- (3) - 두 집합 모두 원소가 존재하면 교집합 set에 원소를 추가한다.
+
+
+- **테스트**
+```javascript
+const setA = new Set();
+
+setA.add(1);
+setA.add(2);
+setA.add(3);
+
+const setB = new Set();
+
+setB.add(3);
+setB.add(4);
+setB.add(5);
+setB.add(6);
+
+const intersectionSet = setA.intersection(setB);
+console.log(intersectionSet.values()); // ["3"]
+```
+
+---
+
+### 3. **차집합 (Difference)**
+- **기호**: ( A - B ) 또는 ( A ∖ B )
+- **의미**: ( A )에 속하면서 ( B )에는 속하지 않는 원소들의 집합.
+- **예**: ( A = {1, 2, 3}, B = {3, 4, 5} )일 때, ( A - B = {1, 2} ).
+- **구현**
+```javascript
+class Set {
+  // ...(생략)
+
+  difference(otherSet) {
+    const differenceSet = new Set(); // (1)
+    const values = this.values();
+
+    for (let i = 0; i < values.length; i++) {
+      if (!otherSet.has(values[i])) { // (2)
+        differenceSet.add(values[i]); // (3)
+      }
+    }
+
+    return differenceSet;
+  }
+}
+```
+- (1) - 차집합으로 만들 새로운 set을 생성한다.
+- (2) - 순회중인 현재 집합(A)의 원소가 다른 집합(B)에는 없는지 확인한다.
+- (3) - 현재 집합(A)에는 있지만 다른 집합(B)에는 존재하지 않으면 차집합 set에 원소를 추가한다.
+
+
+- **테스트**
+```javascript
+const setA = new Set();
+
+setA.add(1);
+setA.add(2);
+setA.add(3);
+
+const setB = new Set();
+
+setB.add(2);
+setB.add(3);
+setB.add(4);
+
+const differenceSet = setA.difference(setB);
+console.log(differenceSet.values()); // ["1"]
+```
+
+---
+
+### 4. **부분집합 (Subset)**
+- **기호**: ( A ⊆ B )
+- **의미**: ( A )의 모든 원소가 ( B )에 포함되어 있을 때, ( A )는 ( B )의 부분집합이다.
+- **기호 설명**:
+  - ( A ⊆ B ): ( A )는 ( B )의 **부분집합** (같거나 작음).
+  - ( A ⊂ B ): ( A )는 ( B )의 **진부분집합** (엄밀히 작음, 즉 ( A \neq B )).
+- **예**: ( A = {1, 2}, B = {1, 2, 3} )일 때, ( A ⊆ B ).
+- **구현**
+```javascript
+class Set {
+  // ...(생략)
+
+  subset(otherSet) {
+    const subSet = new Set(); // (1)
+    
+    if (this.size() > otherSet.size()) { // (2)
+        return false;
+    }
+    
+    const values = this.values();
+
+    for (let i = 0; i < values.length; i++) {
+      if (!otherSet.has(values[i])) { // (3)
+        return false;
+      }
+    }
+
+    return true; // (4)
+  }
+}
+```
+- (1) - 부분집합으로 만들 새로운 set을 생성한다.
+- (2) - 현재 집합(A)의 size가 다른 집합(B)의 size보다 크다면 이미 부분집합의 조건에 해당하지 않아 false를 반환한다.
+- (3) - 현재 집합(A)에는 있지만 다른 집합(B)에는 존재하지 않으면 이 역시 부분집합 조건에 만족하지 않아 false를 반환한다.
+- (4) - 순회가 끝나고 현재 집합(A)의 모든 원소가 다른 집합(B)에 포함되는 경우로, 부분집합 조건을 만족하여 true를 반환한다.
+
+- **테스트**
+```javascript
+const setA = new Set();
+
+setA.add(1);
+setA.add(2);
+
+const setB = new Set();
+
+setB.add(1);
+setB.add(2);
+setB.add(3);
+
+const setC = new Set();
+
+setC.add(2);
+setC.add(3);
+setC.add(4);
+
+console.log(setA.subset(setB)); // true
+console.log(setA.subset(setC)); // false
+```
+
+---
