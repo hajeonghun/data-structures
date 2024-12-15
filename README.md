@@ -934,11 +934,11 @@ class Set {
 
   subset(otherSet) {
     const subSet = new Set(); // (1)
-    
+
     if (this.size() > otherSet.size()) { // (2)
-        return false;
+      return false;
     }
-    
+
     const values = this.values();
 
     for (let i = 0; i < values.length; i++) {
@@ -983,7 +983,7 @@ console.log(setA.subset(setC)); // false
 
 ## Dictionary
 > 딕셔너리(Dictionary)는 [key, value] 형태의 데이터를 가지는 자료구조이다.
-- 집합이 [key, key], 딕셔너리가 [key, value] 형태의 원소를 모아놓은 점에서 두 자료구조는 비슷하다.
+- 집합이 `[key, key]`, 딕셔너리가 `[key, value]` 형태의 원소를 모아놓은 점에서 두 자료구조는 비슷하다.
 - 딕셔너리는 맵(Map)이라고도 한다.
 
 ### 구현단계
@@ -1004,5 +1004,54 @@ class Dictionary {
     this.items = {};
   }
 
+  has(key) {
+    return this.items.hasOwnProperty(key);
+  }
+
+  set(key, value) {
+    this.items[key] = value;
+  }
+
+  remove(key) {
+    if (this.has(key)) {
+      delete this.items[key];
+      return true;
+    }
+
+    return false;
+  }
+
+  get(key) {
+    return this.items[key];
+  }
+
+  keys() {
+    return Object.keys(this.items);
+  }
+
+  values() {
+    return Object.values(this.items);
+  }
+
+  clear() {
+    this.items = {};
+  }
+
+  size() {
+    return Object.keys(this.items).length;
+  }
 }
+```
+
+- **테스트**
+```javascript
+const dictionary = new Dictionary();
+
+dictionary.set('Ha', 'hajh1994@gmail.com');
+dictionary.set('Jane', 'jane98@gmail.com');
+
+console.log(dictionary.has('Ha')); // true
+console.log(dictionary.size()); // 2
+console.log(dictionary.keys()); // ["Ha", "Jane"]
+console.log(dictionary.get('Jane')); // jane98@gmail.com
 ```
