@@ -1055,3 +1055,73 @@ console.log(dictionary.size()); // 2
 console.log(dictionary.keys()); // ["Ha", "Jane"]
 console.log(dictionary.get('Jane')); // jane98@gmail.com
 ```
+## HashTable
+> 해시 테이블(HashTable)은 Dictionary 클래스의 해시 구현이라 할 수 있다.
+- 해싱(hashing)은 자료구조에서 특정 값을 가장 신속하게 찾는 방법이다.
+- 해시 함수는 어떤 키에 해당하는 값의 주소를 테이블에서 찾아주는 함수이므로 조회 속도가 매우 빠르고 간단하다.
+- 해시 함수 중 하나인 루즈루즈(lose lose)해시 함수는 키를 구성하는 문자의 아스키(ASCII)값을 단순히 더하는 것이다.
+  - | 키(Key)   | 아스키값 (각 문자)                | 해시 값 | 해시 테이블 (슬롯) |
+                |-----------|-----------------------------------|---------|-------------|
+    | "apple"   | 97, 112, 112, 108, 101           | 530     | 슬롯 530     |
+    | "banana"  | 98, 97, 110, 97, 110, 97         | 619     | 슬롯 619     |
+    | "cherry"  | 99, 104, 101, 114, 114, 121      | 753     | 슬롯 753     |
+
+
+### 구현단계
+- 구현해야할 메서드
+  - put(key, value): 원소를 추가한다.(또는 기존 원소를 수정한다.)
+  - remove(key): 키에 해당하는 원소를 삭제한다.
+  - get(key): 키에 해당하는 원소를 반환한다.
+  - loseloseHashCode(key): 키의 해시값을 만들 해시 함수(private 메소드)
+
+- **구현**
+```javascript
+class HashTable {
+  constructor() {
+    this.table = [];
+  }
+
+  #loseloseHashCode(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) { // (1)
+      hash += key.charCodeAt(i); // (2)
+    }
+
+    return hash % 37; // (3)
+  }
+
+  put(key, value) {
+    const position = this.#loseloseHashCode(key);
+    console.log({position, key});
+    this.table[position] = value;
+  }
+
+  remove(key) {
+    const position = this.#loseloseHashCode(key);
+    this.table[position] = undefined;
+  }
+
+  get(key) {
+    const position = this.#loseloseHashCode(key);
+    return this.table[position];
+  }
+
+}
+```
+- (1) - key의 길이만큼 반복한다.
+- (2) - key의 각 문자마다 아스키(ASCII)값을 합하여 hash 값을 만든다.
+- (3) - 아스키 값이 작은 영역이 있음을 감안하여 hash 값을 임의의 숫자로 나눈 나머지를 반환한다.  
+
+
+- **테스트**
+```javascript
+const hash = new HashTable();
+hash.put('Ha', 'hajh1994@gmail.com'); // {position: 21, key: 'Ha'}
+hash.put('Park', 'park1993@gmail.com'); // {position: 28, key: 'Park'}
+
+hash.get('Ha'); // hajh1994@gmail.com
+
+hash.remove('Ha');
+hash.get('Ha'); // undefined
+
+```
